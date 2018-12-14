@@ -17,7 +17,7 @@ do
 	fi
 
 	# Hacemos la copia de seguridad según el dia de la semana
-	if [ $diasemana == "vie" ]
+	if [ $diasemana == "lun" ]
 	then
 		# Si el dia es domingo, la copia sera completa
 
@@ -48,6 +48,34 @@ do
 		ssh -i /root/.ssh/backup-key root@$ip rm -r /tmp/backup
 	else
 		# Si el dia no es domingo, la copia sera diferencial
-		echo "Diferencial"
+
+		fechacompleta='14-dic-18'
+
+                # Diferencial de los homes
+                homes=`ssh -i /root/.ssh/backup-key root@$ip ls /home`
+                for i in $homes
+                do
+                        # Homes de los usuarios
+                        ssh -i /root/.ssh/backup-key root@$ip 'tar -czpf /tmp/backup/home_'$i'.tar.gz /home/$i/* -N $fechacompleta' 2> /dev/null
+                done
+                        # Home del root
+                        ssh -i /root/.ssh/backup-key root@$ip 'tar -czpf /tmp/backup/home_root.tar.gz /root/* -N $fechacompleta' 2> /dev/null
+                # Diferencial del /etc
+                ssh -i /root/.ssh/backup-key root@$ip 'tar -czpf /tmp/backup/etc.tar.gz /etc/* -N $fechacompleta' 2> /dev/null
+                # Diferencial del /var/cache
+                ssh -i /root/.ssh/backup-key root@$ip 'tar -czpf /tmp/backup/var_cache.tar.gz /var/cache/* -N $fechacompleta' 2> /dev/null
+                # Diferencial del /var/lib
+                ssh -i /root/.ssh/backup-key root@$ip 'tar -czpf /tmp/backup/var_lib.tar.gz /var/lib/* -N $fechacompleta' 2> /dev/null
+                # Diferencial del /var/log
+                ssh -i /root/.ssh/backup-key root@$ip 'tar -czpf /tmp/backup/var_log.tar.gz /var/log/* -N $fechacompleta' 2> /dev/null
+                # Diferencial del /var/www
+                ssh -i /root/.ssh/backup-key root@$ip 'tar -czpf /tmp/backup/var_www.tar.gz /var/www/*  -N $fechacompleta' 2> /dev/null
+
+                # Se comprime todo y se manda al servidor de copias de seguridad
+                ssh -i /root/.ssh/backup-key root@$ip 'tar -czpf /tmp/backup/diferencial_'$fecha'.tar.gz /tmp/backup/*' 2> /dev/null
+                scp -i /root/.ssh/backup-key root@$ip:/tmp/backup/diferencial_$fecha.tar.gz /copias/$hostname/diferenciales 1> /dev/null
+                # Borramos el directorio /tmp/backup
+                ssh -i /root/.ssh/backup-key root@$ip rm -r /tmp/backup
+
 	fi
 done < equipos.csv
