@@ -71,6 +71,16 @@ do
 		scp -i /root/.ssh/backup-key root@$ip:/tmp/backup/completa_$fecha.tar.gz /copias/$hostname/completas 1> /dev/null
 		# Borramos el directorio /tmp/backup
 		ssh -i /root/.ssh/backup-key root@$ip rm -r /tmp/backup
+
+		#Insertamos un nuevo registro en el log
+		fechahora=`date +%b' '%d' '%H':'%M':'%S`
+		estado=`ls /copias/$hostname/completas/completa_$fecha.tar.gz | wc -l`
+		if [ $estado = 1 ]
+		then
+			echo "$fechahora $hostname completa: copia realizada" >> /home/francisco/backup-bash/backup_log
+		else
+			echo "$fechahora $hostname completa: copia fallida" >> /home/francisco/backup-bash/backup_log
+		fi
 	else
 		# Si el dia no es domingo, la copia sera diferencial
 
@@ -100,5 +110,14 @@ do
                 # Borramos el directorio /tmp/backup
                 ssh -i /root/.ssh/backup-key root@$ip rm -r /tmp/backup
 
+                #Insertamos un nuevo registro en el log
+                fechahora=`date +%b' '%d' '%H':'%M':'%S`
+                estado=`ls /copias/$hostname/diferenciales/diferencial_$fecha.tar.gz | wc -l`
+                if [ $estado = 1 ]
+                then
+                        echo "$fechahora $hostname diferencial: copia realizada" >> /home/francisco/backup-bash/backup_log
+                else
+                        echo "$fechahora $hostname diferencial: copia fallida" >> /home/francisco/backup-bash/backup_log
+                fi
 	fi
 done < equipos.csv
