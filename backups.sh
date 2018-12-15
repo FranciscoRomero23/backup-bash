@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Script que realiza copias de seguridad en los clientes disponibles.
+# Los lunes hace una copia completa y el resto de dias hace una copia diferencial.
+# Script creado por Francisco José Romero Morillo.
+
 diasemana=`date +%a`
 fecha=`date +%d-%m-%y`
 
@@ -17,7 +21,7 @@ do
 	fi
 
 	# Hacemos la copia de seguridad según el dia de la semana
-	if [ $diasemana == "lun" ]
+	if [ $diasemana == "vie" ]
 	then
 		# Si el dia es domingo, la copia sera completa
 
