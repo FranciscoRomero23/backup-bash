@@ -14,7 +14,7 @@ done < $2
 
 # Se añaden al crontab las tareas de copias de seguridad
 
-echo "45 * * * * bash $4 $1 $2 $3" >> /var/spool/cron/crontabs/root
+echo "55 * * * * bash $4 $1 $2 $3" >> /var/spool/cron/crontabs/root
 
 # Se crea el fichero de registros
 touch /$3/backup_log

@@ -27,25 +27,73 @@ read completa
 echo "Dime la fecha de la copia diferencial"
 read diferencial
 
-disponible=`cat $2 | grep -w $cliente | wc -l`
+# Comprobamos si existe el cliente
+cliente_existe=`cat $2 | grep -w $cliente | wc -l`
 
-if [ $disponible != 0 ]
+if [ $cliente_existe = 1 ]
 then
-	echo "Restaurando copia del cliente $cliente para la fecha $fecha..."
+	# Comprobamos si las fechas son correctas
+	completa_existe=`ls /$3/$cliente/completas | grep $completa | wc -l`
+	diferencial_existe=`ls /$3/$cliente/completas | grep $diferencial | wc -l`
 
-	ip=`cat $2 | grep -w $cliente | cut -d":" -f2`
-	ssh -i $1 root@$ip mkdir /tmp/backup/completa
-	ssh -i $1 root@$ip mkdir /tmp/backup/diferencial
+	if [ $completa_existe = 1 ] && [ $diferencial_existe = 1 ]
+	then
+		echo "Restaurando copia del cliente $cliente para la fecha $diferencial..."
 
-	# Mandamos las copias al cliente
-	scp -i $1 /$3/$cliente/completas/completa_$fecha.tar.gz root@$ip:/tmp/backup
-	scp -i $1 /$3/$cliente/diferenciales/diferencial_$fecha.tar.gz root@$ip:/tmp/backup
+		ip=`cat $2 | grep -w $cliente | cut -d":" -f2`
 
-	# Descomprimimos las copias
-	ssh -i $1 root@$ip tar -xzpf /tmp/backup/completa_$fecha.tar.gz /tmp/backup/completa
-	ssh -i $1 root@$ip tar -xzpf /tmp/backup/diferencial_$fecha.tar.gz /tmp/backup/diferencial
+		# Creamos un directorio para las copias de seguridad
+		ssh -i $1 root@$ip mkdir /backups
 
-	echo "Restauración completada."
+		# Mandamos las copias al cliente
+		scp -i $1 /$3/$cliente/completas/completa_$completa.tar.gz root@$ip:/backups 1> /dev/null
+		scp -i $1 /$3/$cliente/diferenciales/diferencial_$completa.tar.gz root@$ip:/backups 1> /dev/null
+
+		# Descomprimimos las copia completa
+		ssh -i $1 root@$ip 'tar -xzpf /backups/completa_'$completa'.tar.gz -C /'
+		contenido=`ssh -i $1 root@$ip ls /tmp/backup/*.tar.gz`
+		for i in $contenido
+		do
+			ssh -i $1 root@$ip 'tar -xzpf '$i' -C /'
+		done
+
+		# Instalamos los paquetes provenientes del fichero packages.txt
+		paquetes=`ssh -i $1 root@$ip cat /tmp/backup/packages.txt`
+		listapaquetes=''
+		for i in $paquetes
+		do
+			listapaquetes="$listapaquetes $i"
+		done
+		apt-get install $listapaquetes -y 1> /dev/null
+
+		# Vaciamos el directorio /tmp/backup
+		ssh -i $1 root@$ip rm -r /tmp/backup
+
+	        # Descomprimimos las copia diferencial
+	        ssh -i $1 root@$ip 'tar -xzpf /backups/diferencial_'$diferencial'.tar.gz -C /'
+	        contenido=`ssh -i $1 root@$ip ls /tmp/backup/*.tar.gz`
+	        for i in $contenido
+	        do
+	               	ssh -i $1 root@$ip 'tar -xzpf '$i' -C /'
+	        done
+
+		# Instalamos los paquetes provenientes del fichero packages.txt
+		paquetes=`ssh -i $1 root@$ip cat /tmp/backup/packages.txt`
+		listapaquetes=''
+		for i in $paquetes
+		do
+		        listapaquetes="$listapaquetes $i"
+		done
+		apt-get install $listapaquetes -y 1> /dev/null
+
+		# Borramos los ficheros tar.gz
+		ssh -i $1 root@$ip rm -r /backups
+		ssh -i $1 root@$ip rm -r /tmp/backup
+
+		echo "Restauración completada."
+	else
+		echo "Las fechas no son correctas o las has escrito mal."
+	fi
 else
-	echo "No existe el cliente $cliente o lo has escrito mal"
+	echo "El cliente $cliente no existe o lo has escrito mal."
 fi

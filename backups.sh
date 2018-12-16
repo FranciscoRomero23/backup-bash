@@ -22,11 +22,11 @@ do
 	then
 		ssh -i $1 root@$ip 'rpm -qa > /tmp/backup/paquetes'
 	else
-		ssh -i $1 root@$ip 'dpkg -l | cut -d" " -f3 > /tmp/backup/paquetes'
+		ssh -i $1 root@$ip 'dpkg -l | grep ^i | cut -d" " -f3 > /tmp/backup/packages.txt'
 	fi
 
 	# Hacemos la copia de seguridad según el dia de la semana
-	if [ $diasemana = 7 ]
+	if [ $diasemana = 2 ]
 	then
 		# Si el dia es lunes, la copia sera completa
 
