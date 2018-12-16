@@ -24,6 +24,8 @@ Este script realizara los siguientes pasos:
 
 2. Añadira al crontab las tareas de copias de seguridad.
 
+3. Creara el fichero de registros en el directorio principal para las copias de seguridad
+
 Al script debes indicarle cuatro parametros:
 
    Parametro 1: ruta de la clave privada ssh
