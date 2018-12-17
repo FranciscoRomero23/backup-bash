@@ -64,7 +64,14 @@ then
 		do
 			listapaquetes="$listapaquetes $i"
 		done
-		apt-get install $listapaquetes -y 1> /dev/null
+		if [ $cliente =="zapatero" ]
+		then
+			yum update -y
+			yum install $listapaquetes -y 1> /dev/null
+		else
+			apt-get update -y 1 > /dev/null
+			apt-get install $listapaquetes -y 1> /dev/null
+		fi
 
 		# Vaciamos el directorio /tmp/backup
 		ssh -i $1 root@$ip rm -r /tmp/backup
@@ -84,7 +91,14 @@ then
 		do
 		        listapaquetes="$listapaquetes $i"
 		done
-		apt-get install $listapaquetes -y 1> /dev/null
+                if [ $cliente =="zapatero" ]
+                then
+                        yum update -y
+                        yum install $listapaquetes -y 1> /dev/null
+                else
+                        apt-get update -y 1 > /dev/null
+                        apt-get install $listapaquetes -y 1> /dev/null
+                fi
 
 		# Borramos los ficheros tar.gz
 		ssh -i $1 root@$ip rm -r /backups

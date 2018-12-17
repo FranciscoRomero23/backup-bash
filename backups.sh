@@ -20,13 +20,13 @@ do
 	# Generamos un fichero con los paquetes del sistema
 	if [ $hostname == "zapatero" ]
 	then
-		ssh -i $1 root@$ip 'rpm -qa > /tmp/backup/paquetes'
+		ssh -i $1 root@$ip 'rpm -qa > /tmp/backup/packages.txt'
 	else
 		ssh -i $1 root@$ip 'dpkg -l | grep ^i | cut -d" " -f3 > /tmp/backup/packages.txt'
 	fi
 
 	# Hacemos la copia de seguridad según el dia de la semana
-	if [ $diasemana = 2 ]
+	if [ $diasemana = 1 ]
 	then
 		# Si el dia es lunes, la copia sera completa
 
