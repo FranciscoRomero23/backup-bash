@@ -12,10 +12,14 @@
 diasemana=`date +%u`
 fecha=`date +%d-%m-%y`
 
-while IFS=: read -r hostname ip
+clientes=`cat $2`
+for ip in $clientes
 do
 	# Generamos el directorio donde se preparara la copia de seguridad
 	ssh -i $1 root@$ip mkdir /tmp/backup
+
+        # Obtenemos el hostname del cliente
+        hostname=`ssh -i $1 root@$ip hostname -s`
 
 	# Generamos un fichero con los paquetes del sistema
 	if [ $hostname == "zapatero" ]
@@ -35,34 +39,69 @@ do
 		for i in $homes
 		do
 			# Homes de los usuarios
-			ssh -i $1 root@$ip rm /home/$i/completa.snap /home/$i/diferencial.snap
+			if [ -f /home/$i/completa.snap ] && [ -f /home/$i/diferencial.snap ]
+			then
+				ssh -i $1 root@$ip rm /home/$i/completa.snap /home/$i/diferencial.snap
+			fi
 			ssh -i $1 root@$ip 'tar -czpf /tmp/backup/home_'$i'.tar.gz -g /home/'$i'/completa.snap /home/'$i'/*' 2> /dev/null
-			ssh -i $1 root@$ip cp /home/$i/completa.snap /home/$i/diferencial.snap 2> /dev/null
+			ssh -i $1 root@$ip 'cp /home/'$i'/completa.snap /home/'$i'/diferencial.snap' 2> /dev/null
 		done
 			# Home del root
-			ssh -i $1 root@$ip rm /root/completa.snap /root/diferencial.snap
+			if [ -f /root/completa.snap ] && [ -f /root/diferencial.snap ]
+                        then
+				ssh -i $1 root@$ip rm /root/completa.snap /root/diferencial.snap
+			fi
 			ssh -i $1 root@$ip 'tar -czpf /tmp/backup/home_root.tar.gz -g /root/completa.snap /root/*' 2> /dev/null
 			ssh -i $1 root@$ip 'cp /root/completa.snap /root/diferencial.snap' 2> /dev/null
 		# Completa del /etc
-		ssh -i $1 root@$ip rm /etc/completa.snap /etc/diferencial.snap
+		if [ -f /etc/completa.snap ] && [ -f /etc/diferencial.snap ]
+                then
+			ssh -i $1 root@$ip rm /etc/completa.snap /etc/diferencial.snap
+		fi
 		ssh -i $1 root@$ip 'tar -czpf /tmp/backup/etc.tar.gz -g /etc/completa.snap /etc/*' 2> /dev/null
 		ssh -i $1 root@$ip 'cp /etc/completa.snap /etc/diferencial.snap' 2> /dev/null
 		# Completa del /var/cache
-		ssh -i $1 root@$ip rm /var/cache/completa.snap /var/cache/diferencial.snap
+		if [ -f /var/cache/completa.snap ] && [ -f /var/cache/diferencial.snap ]
+                then
+			ssh -i $1 root@$ip rm /var/cache/completa.snap /var/cache/diferencial.snap
+		fi
 		ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_cache.tar.gz -g /var/cache/completa.snap /var/cache/*' 2> /dev/null
 		ssh -i $1 root@$ip 'cp /var/cache/completa.snap /var/cache/diferencial.snap' 2> /dev/null
 		# Completa del /var/lib
-                ssh -i $1 root@$ip rm /var/lib/completa.snap /var/lib/diferencial.snap
+		if [ -f /var/lib/completa.snap ] && [ -f /var/lib/diferencial.snap ]
+                then
+                	ssh -i $1 root@$ip rm /var/lib/completa.snap /var/lib/diferencial.snap
+		fi
 		ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_lib.tar.gz -g /var/lib/completa.snap /var/lib/*' 2> /dev/null
 		ssh -i $1 root@$ip 'cp /var/lib/completa.snap /var/lib/diferencial.snap' 2> /dev/null
 		# Completa del /var/log
-                ssh -i $1 root@$ip rm /var/log/completa.snap /var/log/diferencial.snap
+                if [ -f /var/log/completa.snap ] && [ -f /var/log/diferencial.snap ]
+                then
+			ssh -i $1 root@$ip rm /var/log/completa.snap /var/log/diferencial.snap
+		fi
 		ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_log.tar.gz -g /var/log/completa.snap /var/log/*' 2> /dev/null
 		ssh -i $1 root@$ip 'cp /var/log/completa.snap /var/log/diferencial.snap' 2> /dev/null
 		# Completa del /var/www
-                ssh -i $1 root@$ip rm /var/www/completa.snap /var/www/diferencial.snap
+                if [ -f /var/www/completa.snap ] && [ -f /var/www/diferencial.snap ]
+                then
+	                ssh -i $1 root@$ip rm /var/www/completa.snap /var/www/diferencial.snap
+		fi
 		ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_www.tar.gz -g /var/www/completa.snap /var/www/*' 2> /dev/null
 		ssh -i $1 root@$ip 'cp /var/www/completa.snap /var/www/diferencial.snap' 2> /dev/null
+                # Completa del /var/spool
+                if [ -f /var/spool/completa.snap ] && [ -f /var/spool/diferencial.snap ]
+                then
+                	ssh -i $1 root@$ip rm /var/spool/completa.snap /var/spool/diferencial.snap
+                fi
+		ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_spool.tar.gz -g /var/spool/completa.snap /var/spool/*' 2> /dev/null
+                ssh -i $1 root@$ip 'cp /var/spool/completa.snap /var/spool/diferencial.snap' 2> /dev/null
+                # Completa del /usr/sbin
+                if [ -f /usr/sbin/completa.snap ] && [ -f /usr/sbin/diferencial.snap ]
+                then
+                	ssh -i $1 root@$ip rm /usr/sbin/completa.snap /usr/sbin/diferencial.snap
+                fi
+		ssh -i $1 root@$ip 'tar -czpf /tmp/backup/usr_sbin.tar.gz -g /usr/sbin/completa.snap /usr/sbin/*' 2> /dev/null
+                ssh -i $1 root@$ip 'cp /usr/sbin/completa.snap /usr/sbin/diferencial.snap' 2> /dev/null
 
 		# Se comprime todo y se manda al servidor de copias de seguridad
 		ssh -i $1 root@$ip 'tar -czpf /tmp/backup/completa_'$fecha'.tar.gz /tmp/backup/*' 2> /dev/null
@@ -101,6 +140,10 @@ do
                 ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_log.tar.gz -g /var/log/diferencial.snap /var/log/*' 2> /dev/null
                 # Diferencial del /var/www
                 ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_www.tar.gz -g /var/www/diferencial.snap /var/www/*' 2> /dev/null
+                # Completa del /var/spool
+                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_spool.tar.gz -g /var/spool/completa.snap /var/spool/*' 2> /dev/null
+                # Completa del /usr/sbin
+                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/usr_sbin.tar.gz -g /usr/sbin/completa.snap /usr/sbin/*' 2> /dev/null
 
                 # Se comprime todo y se manda al servidor de copias de seguridad
                 ssh -i $1 root@$ip 'tar -czpf /tmp/backup/diferencial_'$fecha'.tar.gz /tmp/backup/*' 2> /dev/null
@@ -118,4 +161,4 @@ do
                         echo "$fechahora $hostname diferencial: copia fallida" >> /$3/backup_log
                 fi
 	fi
-done < $2
+done
