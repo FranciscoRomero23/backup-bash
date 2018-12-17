@@ -12,7 +12,7 @@
 diasemana=`date +%u`
 fecha=`date +%d-%m-%y`
 
-clientes=`cat $2`
+clientes=`cat $2 | cut -d":" -f2`
 for ip in $clientes
 do
 	# Generamos el directorio donde se preparara la copia de seguridad

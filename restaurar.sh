@@ -13,8 +13,9 @@
 echo "##############################"
 echo "#    Clientes disponibles    #"
 echo "##############################"
-while IFS=: read -r hostname ip
+while IFS=: read -r ip
 do
+	hostname=`ssh -i $1 root@$ip hostname -s`
 	echo "# $hostname - $ip"
 done < $2
 echo "##############################"
