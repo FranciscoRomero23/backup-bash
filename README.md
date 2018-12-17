@@ -6,11 +6,7 @@ Instrucciones para implantar el sistema de copias de seguridad
 
 1. Clona el repositorio a tu servidor de copias de seguridad.
 
-2. Crea un fichero clientes.csv donde estaran el hostname y la dirección ip de tus clientes.
-   Siguiendo este formato:
-        hostname:ipdaddres
-   Ejemplo:
-        debian9:192.168.1.175
+2. Crea un fichero clientes.csv donde estarán la dirección ip de tus clientes.
 
 3. Crea un par de claves ssh y comparte la clave publica con tus clientes (fichero authorized_keys).
 
