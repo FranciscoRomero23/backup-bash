@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Script que restaura las copias de seguridad disponibles.
-# Indicas cliente y dia, y te restaura esa copia.
+# Indicas cliente y fecha de las copias, y te restaura esas copias.
 # Script creado por Francisco José Romero Morillo.
 
-# Este script utiliza tres parametros:
-# Parametro 1: ruta clave privada ssh
-# Parametro 2: ruta fichero clientes.csv
-# Parametro 3: ruta directorio pricipal de copias
+# Este script utiliza tres parámetros:
+# Parámetro 1: ruta clave privada ssh
+# Parámetro 2: ruta fichero clientes.csv
+# Parámetro 3: ruta directorio pricipal de copias
 
 # Mostramos los clientes de los que guardamos copias
 echo "##############################"

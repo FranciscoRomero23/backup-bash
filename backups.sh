@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Script que realiza copias de seguridad en los clientes disponibles.
-# Los lunes hace una copia completa y el resto de dias hace una copia diferencial.
+# Los lunes hace una copia completa y el resto de días hace una copia diferencial.
 # Script creado por Francisco José Romero Morillo.
 
-# Este script utiliza tres parametros:
-# Parametro 1: ruta clave privada ssh
-# Parametro 2: ruta fichero clientes.csv
-# Parametro 3: ruta directorio pricipal de copias
+# Este script utiliza tres parámetros:
+# Parámetro 1: ruta clave privada ssh
+# Parámetro 2: ruta fichero clientes.csv
+# Parámetro 3: ruta directorio pricipal de copias
 
 diasemana=`date +%u`
 fecha=`date +%d-%m-%y`
@@ -29,10 +29,10 @@ do
 		ssh -i $1 root@$ip 'dpkg -l | grep ^i | cut -d" " -f3 > /tmp/backup/packages.txt'
 	fi
 
-	# Hacemos la copia de seguridad según el dia de la semana
+	# Hacemos la copia de seguridad según el día de la semana
 	if [ $diasemana = 1 ]
 	then
-		# Si el dia es lunes, la copia sera completa
+		# Si el día es lunes, la copia sera completa
 
 		# Completa de los homes
 		homes=`ssh -i $1 root@$ip ls /home`
@@ -92,7 +92,7 @@ do
 			echo "$fechahora $hostname completa: copia fallida" >> /$3/backup_log
 		fi
 	else
-		# Si el dia no es lunes, la copia sera diferencial
+		# Si el día no es lunes, la copia sera diferencial
 
                 # Diferencial de los homes
                 homes=`ssh -i $1 root@$ip ls /home`

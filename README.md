@@ -1,6 +1,6 @@
 # backup-bash
 
-Estos son unos scripts cuya funcion es realizar copias de seguridad remotas en una infraestructura de equipos gnu/linux.
+Estos son unos scripts cuya función es realizar copias de seguridad remotas en una infraestructura de equipos gnu/linux.
 
 Instrucciones para implantar el sistema de copias de seguridad
 
@@ -10,21 +10,20 @@ Instrucciones para implantar el sistema de copias de seguridad
 
 3. Crea un par de claves ssh y comparte la clave publica con tus clientes (fichero authorized_keys).
 
-4. Ejecuta el script instalación.sh
+4. Ejecuta el script instalacion.sh
 
-Script instalacion.sh
+	Al script debes indicarle cuatro parámetros:
 
-Este script realizara los siguientes pasos:
+	* Parámetro 1: ruta de la clave privada ssh
+	* Parámetro 2: ruta del fichero clientes.csv
+	* Parámetro 3: ruta del directorio principal para las copias de seguridad
+	* Parámetro 4: ruta del script backups.sh
 
-1. Creara los directorios donde se guardaran las copias de seguridad.
+        Este script realizara los siguientes pasos:
 
-2. Añadira al crontab las tareas de copias de seguridad.
+        1. Creara los directorios donde se guardaran las copias de seguridad.
 
-3. Creara el fichero de registros en el directorio principal para las copias de seguridad
+        2. Añadirá al crontab las tareas de copias de seguridad.
 
-Al script debes indicarle cuatro parametros:
+        3. Creara el fichero de registros en el directorio principal para las copias de seguridad
 
-   Parametro 1: ruta de la clave privada ssh
-   Parametro 2: ruta del fichero clientes.csv
-   Parametro 3: ruta del directorio principal para las copias de seguridad
-   Parametro 4: ruta del script backups.sh
