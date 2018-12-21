@@ -99,24 +99,24 @@ do
                 for i in $homes
                 do
                         # Homes de los usuarios
-                        ssh -i $1 root@$ip 'tar -czpf /tmp/backup/home_'$i'.tar.gz -g /home/'$i'/diferencial.snap /home/'$i'/*' 2> /dev/null
+                        ssh -i $1 root@$ip 'tar -czpf /tmp/backup/home_'$i'.tar.gz -N "last Mon" /home/'$i'/*' 2> /dev/null
                 done
                         # Home del root
-                        ssh -i $1 root@$ip 'tar -czpf /tmp/backup/home_root.tar.gz -g /root/diferencial.snap /root/*' 2> /dev/null
+                        ssh -i $1 root@$ip 'tar -czpf /tmp/backup/home_root.tar.gz -N "last Mon" /root/*' 2> /dev/null
                 # Diferencial del /etc
-                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/etc.tar.gz -g /etc/diferencial.snap /etc/*' 2> /dev/null
+                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/etc.tar.gz -N "last Mon" /etc/*' 2> /dev/null
                 # Diferencial del /var/cache
-                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_cache.tar.gz -g /var/cache/diferencial.snap /var/cache/*' 2> /dev/null
+                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_cache.tar.gz -N "last Mon" /var/cache/*' 2> /dev/null
                 # Diferencial del /var/lib
-                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_lib.tar.gz -g /var/lib/diferencial.snap /var/lib/*' 2> /dev/null
+                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_lib.tar.gz -N "last Mon" /var/lib/*' 2> /dev/null
                 # Diferencial del /var/log
-                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_log.tar.gz -g /var/log/diferencial.snap /var/log/*' 2> /dev/null
+                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_log.tar.gz -N "last Mon" /var/log/*' 2> /dev/null
                 # Diferencial del /var/www
-                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_www.tar.gz -g /var/www/diferencial.snap /var/www/*' 2> /dev/null
+                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_www.tar.gz -N "last Mon" /var/www/*' 2> /dev/null
                 # Completa del /var/spool
-                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_spool.tar.gz -g /var/spool/completa.snap /var/spool/*' 2> /dev/null
+                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/var_spool.tar.gz -N "last Mon" /var/spool/*' 2> /dev/null
                 # Completa del /usr/sbin
-                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/usr_sbin.tar.gz -g /usr/sbin/completa.snap /usr/sbin/*' 2> /dev/null
+                ssh -i $1 root@$ip 'tar -czpf /tmp/backup/usr_sbin.tar.gz -N "last Mon" /usr/sbin/*' 2> /dev/null
 
                 # Se comprime todo y se manda al servidor de copias de seguridad
                 ssh -i $1 root@$ip 'tar -czpf /tmp/backup/diferencial_'$fecha'.tar.gz /tmp/backup/*' 2> /dev/null
