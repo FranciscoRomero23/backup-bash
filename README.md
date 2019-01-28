@@ -11,7 +11,7 @@ Son cuatro scripts:
 
 Instrucciones para implantar el sistema de copias de seguridad
 
-# Clona el repositorio a tu servidor de copias de seguridad.
+1. Clona el repositorio a tu servidor de copias de seguridad.
 2. Crea un fichero clientes.csv donde estarán el hostname y la dirección ip de tus clientes, con un formato hostname:direccionip.
 3. Crea un par de claves ssh y comparte la clave publica con tus clientes (fichero authorized_keys).
 4. Configura los parametros en los scripts backups.sh, borrar-copias.sh e instalacion.sh 
