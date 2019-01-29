@@ -14,6 +14,14 @@ directorio=""
 # Ruta del script backups.sh
 script=""
 
+## Parámetros para la base de datos
+# Usuario
+user=""
+# Contraseña
+passwd=""
+# Nombre de la base de datos
+bd=""
+
 diasemana=`date +%u`
 fecha=`date +%d-%m-%y`
 
@@ -88,17 +96,19 @@ do
 		ssh -i $clavessh root@$ip rm -r /tmp/backup
 
 		#Insertamos un nuevo registro en el log
-		fecha=`date +%d/%m/%y`
-		hora=`date +%H:%M:%S`
 		estado=`ls /$directorio/$hostname/completas/completa_$fecha.tar.gz | wc -l`
 		if [ $estado = 1 ]
 		then
-                        echo "insert into copias values('$fecha','$hora','$host','completa','realizada');" >> /$directorio/copia.sql
-                        mysql -u francisco -pfrancisco copias < /$directorio/copia.sql
+                        fechasql=`date +%d/%m/%y`
+                        hora=`date +%H:%M:%S`
+                        echo "insert into copias values('$fechasql','$hora','$hostname','completa','realizada');" >> /$directorio/copia.sql
+                        mysql -u $user -p$passwd $bd < /$directorio/copia.sql
                         rm /$directorio/copia.sql
                 else
-                        echo "insert into copias values('$fecha','$hora','$host','completa','fallida');" >> /$directorio/copia.sql
-                        mysql -u francisco -pfrancisco copias < /$directorio/copia.sql
+                        fechasql=`date +%d/%m/%y`
+                        hora=`date +%H:%M:%S`
+                        echo "insert into copias values('$fechasql','$hora','$hostname','completa','fallida');" >> /$directorio/copia.sql
+                        mysql -u $user -p$passwd $bd < /$directorio/copia.sql
                         rm /$directorio/copia.sql
 		fi
 	else
@@ -135,17 +145,19 @@ do
                 ssh -i $clavessh root@$ip rm -r /tmp/backup
 
                 #Insertamos un nuevo registro en el log
-                fecha=`date +%d/%m/%y`
-                hora=`date +%H:%M:%S`
                 estado=`ls /$directorio/$hostname/diferenciales/diferencial_$fecha.tar.gz | wc -l`
                 if [ $estado = 1 ]
                 then
-                        echo "insert into copias values('$fecha','$hora','$host','diferencial','realizada');" >> /$directorio/copia.sql
-                        mysql -u francisco -pfrancisco copias < /$directorio/copia.sql
+                        fechasql=`date +%d/%m/%y`
+                        hora=`date +%H:%M:%S`
+                        echo "insert into copias values('$fechasql','$hora','$hostname','diferencial','realizada');" >> /$directorio/copia.sql
+                        mysql -u $user -p$passwd $bd < /$directorio/copia.sql
                         rm /$directorio/copia.sql
                 else
-                        echo "insert into copias values('$fecha','$hora','$host','diferencial','fallida');" >> /$directorio/copia.sql
-                        mysql -u francisco -pfrancisco copias < /$directorio/copia.sql
+                        fechasql=`date +%d/%m/%y`
+                        hora=`date +%H:%M:%S`
+                        echo "insert into copias values('$fechasql','$hora','$hostname','diferencial','fallida');" >> /$directorio/copia.sql
+                        mysql -u $user -p$passwd $bd < /$directorio/copia.sql
                         rm /$directorio/copia.sql
                 fi
 	fi
